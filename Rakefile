@@ -5,10 +5,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "simplificator-percolate"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "adm@m42.ch"
-    gem.homepage = "http://github.com/grrrisu/simplificator-percolate"
+    gem.summary = %Q{An attempt to generalize filtering of AR objects}
+    gem.description = %Q{An attempt to generalize filtering of AR objects}
+    gem.email = "info@simplificator.com"
+    gem.homepage = "http://github.com/simplificator/simplificator-percolate"
     gem.authors = ["Alessandro Di Maria"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
