@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/simplificator-percolate.rb",
+     "simplificator-percolate.gemspec",
      "test/helper.rb",
      "test/test_simplificator-percolate.rb"
   ]
