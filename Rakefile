@@ -9,8 +9,10 @@ begin
     gem.description = %Q{An attempt to generalize filtering of AR objects}
     gem.email = "info@simplificator.com"
     gem.homepage = "http://github.com/simplificator/simplificator-percolate"
-    gem.authors = ["Alessandro Di Maria"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+    gem.authors = ["Alessandro Di Maria", "Pascal Betz"]
+    gem.add_development_dependency "shoulda", ">= 2.11"
+    gem.add_development_dependency "redgreen"
+    gem.add_dependency "activerecord", ">= 2.0.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
@@ -21,7 +23,7 @@ end
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
+  test.pattern = 'test/**/*_test.rb'
   test.verbose = true
 end
 
@@ -29,7 +31,7 @@ begin
   require 'rcov/rcovtask'
   Rcov::RcovTask.new do |test|
     test.libs << 'test'
-    test.pattern = 'test/**/test_*.rb'
+    test.pattern = 'test/**/*_test.rb'
     test.verbose = true
   end
 rescue LoadError
