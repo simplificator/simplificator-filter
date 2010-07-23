@@ -4,7 +4,7 @@ module Filterable
 
     def initialize base, options = {}
       base.filter_definition.keys.each {|key| self[key.to_sym] = nil}
-      options.each {|key, value| self[key.to_sym] = value}
+      options.each {|key, value| self[key.to_sym] = value} if options
     end
 
     def respond_to? name

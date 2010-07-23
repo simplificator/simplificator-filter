@@ -2,7 +2,7 @@ module Filterable
 
   class FilterCondition
 
-    attr_reader :name, :scope, :column
+    attr_reader :name, :scope, :column#, :base
 
 
     @@default_strategy = {:string   => { :patterns => [:like, :begins_with, :ends_with], :default => :like },
@@ -18,42 +18,38 @@ module Filterable
                   :between      => /^(-?\d+)\s?-\s?(-?\d+)$/
                  }
 
-    def initialize table, options
+    def initialize base, options
+      #@base               = base
       @column             = "#{options[:table]}.#{options[:column]}"
-      @name               = options[:name]
+      @name               = "#{options[:name]}_filter"
       @strategy           = options[:strategy] || @@default_strategy[options[:column_type]][:patterns]
       @default_strategy   = options[:strategy] || @@default_strategy[options[:column_type]][:default]
-      @scope              = scope_rails_2(table)
+      @scope              = scope_rails_2(base)
     end
 
 
   protected
 
-    def scope_rails_2 table
-      table.named_scope @name, lambda {|value|
+    def scope_rails_2 base
+      base.named_scope @name, lambda {|value|
         {:conditions => condition(value)}
       }
     end
 
-    def scope_rails_3 table
-      table.scope @name, lambda {|value|
+    def scope_rails_3 base
+      base.scope @name, lambda {|value|
         where condition(value)
       }
     end
 
     def condition value
-      strategy, value = strategy_for(value)
-      send(strategy, value)
-    end
-
-    def strategy_for value
       if @strategy.instance_of? Array
         strategy, value = parse(value)
-        raise ArgumentError, "strategy #{strategy} not allowed" unless @strategy.include? strategy
-        [strategy, value]
+        raise ArgumentError, "strategy #{strategy} not allowed for value '#{value}'" unless @strategy.include? strategy
       else
-        [@strategy, value]
+        strategy = @strategy
       end
+      send(strategy, value)
     end
 
     def parse value

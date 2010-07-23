@@ -14,7 +14,7 @@ class DefaultSome < ActiveRecord::Base
   default_filters_for_attributes :product_name, :price
 end
 
-class TestFilterable < Test::Unit::TestCase
+class TestDefaultFilter < Test::Unit::TestCase
 
   context "default filter" do
 

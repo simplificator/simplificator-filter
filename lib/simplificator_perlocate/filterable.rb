@@ -35,12 +35,18 @@ module Filterable
 
     # @return NamedScope (Rails 2) or Scope (Rails 3)
     def filter_by parameters
-      @filter = FilterParameters.new(self, parameters)
-      parameters.inject(nil) do |scope, parameter|
-        key, value = parameter
-        if filter_condition = filter_definition[key]
-          (scope || self).send(filter_condition.name, value)
+      if parameters
+        @filter = FilterParameters.new(self, parameters)
+        parameters.inject(nil) do |scope, parameter|
+          key, value = parameter
+          if filter_condition = filter_definition[key]
+            (scope || self).send(filter_condition.name, value)
+          end
         end
+      else
+        # TODO ugly hack replace it!!!
+        named_scope(:foo_filter, :conditions => '1=1')
+        foo_filter
       end
     end
 

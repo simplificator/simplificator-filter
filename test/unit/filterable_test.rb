@@ -41,6 +41,17 @@ class TestFilterable < Test::Unit::TestCase
         0.upto(3) {|i| Foo.create(:price => (i+1)*10, :product_name => names[i], :purchased_at => i.days.ago) }
       end
 
+
+      should "skip filter scope" do
+        carpets = Foo.filter_by(nil)
+        assert_equal 4, carpets.size
+      end
+
+      should "skip filter scope 2" do
+        carpets = Foo.filter_by(nil).cheap
+        assert_equal 1, carpets.size
+      end
+
       should "find all carpets" do
         carpets = Foo.filter_by(:fuzzy_name => 'carpet')
         assert_equal 2, carpets.size

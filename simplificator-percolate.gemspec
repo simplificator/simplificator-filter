@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alessandro Di Maria", "Pascal Betz"]
-  s.date = %q{2010-07-22}
+  s.date = %q{2010-07-23}
   s.description = %q{An attempt to generalize filtering of AR objects}
   s.email = %q{info@simplificator.com}
   s.extra_rdoc_files = [
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "test/models.rb",
      "test/simplificator-percolate_test.rb",
      "test/test_helper.rb",
+     "test/unit/default_filters_test.rb",
      "test/unit/filterable_test.rb"
   ]
   s.homepage = %q{http://github.com/simplificator/simplificator-percolate}
@@ -43,6 +44,8 @@ Gem::Specification.new do |s|
     "test/models.rb",
      "test/simplificator-percolate_test.rb",
      "test/test_helper.rb",
+     "test/unit/associations_test.rb",
+     "test/unit/default_filters_test.rb",
      "test/unit/filterable_test.rb"
   ]
 
