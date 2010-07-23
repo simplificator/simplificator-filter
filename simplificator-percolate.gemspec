@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "test/models.rb",
      "test/simplificator-percolate_test.rb",
      "test/test_helper.rb",
+     "test/unit/associations_test.rb",
      "test/unit/default_filters_test.rb",
      "test/unit/filterable_test.rb"
   ]
@@ -46,6 +47,7 @@ Gem::Specification.new do |s|
      "test/test_helper.rb",
      "test/unit/associations_test.rb",
      "test/unit/default_filters_test.rb",
+     "test/unit/filter_parameters_test.rb",
      "test/unit/filterable_test.rb"
   ]
 

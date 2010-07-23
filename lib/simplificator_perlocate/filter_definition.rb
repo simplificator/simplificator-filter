@@ -21,8 +21,6 @@ module Filterable
                         FilterCondition.new(table, options)
                       end
       end
-
-
     end
 
     def condition_options name, options

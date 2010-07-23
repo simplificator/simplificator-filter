@@ -12,7 +12,9 @@ module Filterable
     end
 
     def name_without_setter name
-      /(.*?)=$/.match(name.to_s)[1].try(:to_sym)
+      if matchdata = /(.*?)=$/.match(name.to_s)
+        matchdata[1].to_sym
+      end
     end
 
     def method_missing name, *args, &block

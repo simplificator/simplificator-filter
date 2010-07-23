@@ -8,7 +8,12 @@ module Filterable
     @@default_strategy = {:string   => { :patterns => [:like, :begins_with, :ends_with], :default => :like },
                           :text     => { :patterns => [:like, :begins_with, :ends_with], :default => :like },
                           :integer  => { :patterns => [:equal, :between], :default => :equal },
-                          :date     => { :patterns => [:equal, :between], :default => :equal }
+                          :float    => { :patterns => [:equal, :between], :default => :equal },
+                          :time     => { :patterns => [:equal, :between], :default => :equal },
+                          :date     => { :patterns => [:equal, :between], :default => :equal },
+                          :datetime => { :patterns => [:equal, :between], :default => :equal },
+                          :binary   => { :patterns => [:equal], :default => :equal },
+                          :boolean  => { :patterns => [:equal], :default => :equal }
                          }
 
 
@@ -20,6 +25,7 @@ module Filterable
 
     def initialize base, options
       #@base               = base
+      raise ArgumentError, "no default strategy defined for '#{options[:column_type]}'" unless @@default_strategy[options[:column_type]]
       @column             = "#{options[:table]}.#{options[:column]}"
       @name               = "#{options[:name]}_filter"
       @strategy           = options[:strategy] || @@default_strategy[options[:column_type]][:patterns]
