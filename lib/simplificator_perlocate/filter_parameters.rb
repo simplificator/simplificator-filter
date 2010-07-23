@@ -3,21 +3,25 @@ module Filterable
   class FilterParameters < Hash
 
     def initialize base, options = {}
-      create_accessors base
-      options.each {|key, value| send("#{key}=", value)}
-      @errors = ActiveRecord::Errors.new(base)
+      base.filter_definition.keys.each {|key| self[key.to_sym] = nil}
+      options.each {|key, value| self[key.to_sym] = value}
     end
 
-    def create_accessors base
-      self.class.instance_eval do
-        base.filter_definition.keys.each do |key|
-          define_method(key) do
-            instance_variable_get("@#{key}")
-          end
-          define_method("#{key}=") do |value|
-            instance_variable_set("@#{key}", value)
-          end
-        end
+    def respond_to? name
+      has_key?(name) || has_key?(name_without_setter(name))
+    end
+
+    def name_without_setter name
+      /(.*?)=$/.match(name.to_s)[1].try(:to_sym)
+    end
+
+    def method_missing name, *args, &block
+      if has_key?(name)
+        self[name]
+      elsif has_key?(name_without_setter(name))
+        self[name_without_setter(name)] = *args
+      else
+        super
       end
     end
 

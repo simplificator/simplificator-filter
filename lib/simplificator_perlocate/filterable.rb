@@ -7,7 +7,7 @@ module Filterable
   module ClassMethods
 
     def filter
-      @filter || FilterParameters.new(self)
+      @filter ||= FilterParameters.new(self)
     end
 
     # creates a new filter definition if a block is passed
@@ -21,7 +21,7 @@ module Filterable
     end
 
     def default_filters_for_all_attributes
-      default_filters_for_attributes *self.attributes
+      default_filters_for_attributes *self.column_names.reject {|c| c == self.primary_key.to_s }
     end
 
     def default_filters_for_attributes *attributes
@@ -33,14 +33,13 @@ module Filterable
     alias default_filter_for_attribute default_filters_for_attributes
 
 
-    # @return NamedScope
+    # @return NamedScope (Rails 2) or Scope (Rails 3)
     def filter_by parameters
       @filter = FilterParameters.new(self, parameters)
       parameters.inject(nil) do |scope, parameter|
         key, value = parameter
-        if filter_condition = filter_definition[key] # symbols or strings????
-          receiver = (scope ? scope : self)
-          receiver.send(filter_condition.name, value)
+        if filter_condition = filter_definition[key]
+          (scope || self).send(filter_condition.name, value)
         end
       end
     end

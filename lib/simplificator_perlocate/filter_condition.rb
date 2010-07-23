@@ -4,9 +4,11 @@ module Filterable
 
     attr_reader :name, :scope, :column
 
-    @@default_strategy = {:string => [:like, :begins_with, :ends_with],
-                          :text => [:like, :begins_with, :ends_with],
-                          :integer => [:equal, :between], :date => [:equal, :between]
+
+    @@default_strategy = {:string   => { :patterns => [:like, :begins_with, :ends_with], :default => :like },
+                          :text     => { :patterns => [:like, :begins_with, :ends_with], :default => :like },
+                          :integer  => { :patterns => [:equal, :between], :default => :equal },
+                          :date     => { :patterns => [:equal, :between], :default => :equal }
                          }
 
 
@@ -17,10 +19,11 @@ module Filterable
                  }
 
     def initialize table, options
-      @column     = "#{options[:table]}.#{options[:column]}"
-      @name       = options[:name]
-      @strategy   = options[:strategy] || @@default_strategy[options[:column_type]]
-      @scope      = scope_rails_2(table)
+      @column             = "#{options[:table]}.#{options[:column]}"
+      @name               = options[:name]
+      @strategy           = options[:strategy] || @@default_strategy[options[:column_type]][:patterns]
+      @default_strategy   = options[:strategy] || @@default_strategy[options[:column_type]][:default]
+      @scope              = scope_rails_2(table)
     end
 
 
@@ -39,33 +42,32 @@ module Filterable
     end
 
     def condition value
-      strategy = strategy_for(value)
+      strategy, value = strategy_for(value)
       send(strategy, value)
     end
 
     def strategy_for value
       if @strategy.instance_of? Array
-        strategy = parse(value) if @strategy.include? strategy
+        strategy, value = parse(value)
+        raise ArgumentError, "strategy #{strategy} not allowed" unless @strategy.include? strategy
+        [strategy, value]
       else
-        @strategy
+        [@strategy, value]
       end
     end
 
     def parse value
       case value
         when @@patterns[:like]
-          value = $1
-          :like
+          [:like, $1]
         when @@patterns[:begins_with]
-          value = $1
-          :ends_with
+          [:begins_with, $1]
         when @@patterns[:ends_with]
-          value = $1
-          :begins_with
+          [:ends_with, $1]
         when @@patterns[:between]
-          :between
+          [:between, value]
         else
-          :equal
+          [@default_strategy, value]
       end
     end
 

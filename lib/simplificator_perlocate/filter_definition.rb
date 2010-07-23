@@ -9,6 +9,7 @@ module Filterable
     end
 
     def method_missing name, *args, &block
+      args = [{}] if args.empty?
       args[0][:name]   = name
       args[0][:column] = (args[0][:column] || name).to_s
       column = table.columns_hash[args[0][:column]]
