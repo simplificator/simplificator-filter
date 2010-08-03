@@ -37,7 +37,7 @@ module Filterable
     def filter_by parameters
       if parameters
         @filter = FilterParameters.new(self, parameters)
-        parameters.inject(self.scoped) do |scope, parameter|
+        parameters.inject(self.scoped({})) do |scope, parameter|
           key, value = parameter
 
           if filter_condition = filter_definition[key.to_sym]
@@ -47,7 +47,7 @@ module Filterable
           end
         end
       else
-        scoped
+        scoped({})
       end
     end
 
