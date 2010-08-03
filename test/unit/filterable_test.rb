@@ -5,8 +5,8 @@ class Foo < ActiveRecord::Base
 
   include Filterable
   filter_definition do |filter|
-    filter.fuzzy_name  :strategy => :like, :column => 'product_name'
-    filter.price_range :strategy => :between, :column => 'price'
+    filter.fuzzy_name  :strategy => :like, :attribute => 'product_name'
+    filter.price_range :strategy => :between, :attribute => 'price'
     filter.purchased_at :strategy => :equal
   end
   named_scope :cheap, :conditions => ["price < 15"]

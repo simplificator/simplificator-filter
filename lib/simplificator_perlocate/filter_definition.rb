@@ -11,23 +11,19 @@ module Filterable
     def method_missing name, *args, &block
       args = [{}] if args.empty?
 
-      if args[0][:association]
-        self[name] = (args[0][:association]).to_s.singularize.capitalize.constantize.filter_definition[args[0][:filter].to_sym]
+      options = condition_options(name, args[0])
+      self[name] =  if args[0][:class]
+        args[0][:class].constantize.new(table, options)
       else
-        options = condition_options(name, args[0])
-        self[name] =  if args[0][:class]
-                        args[0][:class].constantize.new(table, options)
-                      else
-                        FilterCondition.new(table, options)
-                      end
+        FilterCondition.new(table, options)
       end
     end
 
     def condition_options name, options
       options[:name]   = name
-      options[:column] = (options[:column] || name).to_s
+      options[:attribute] = (options[:attribute] || name).to_s
 
-      path = options[:column].split('.')
+      path = options[:attribute].split('.')
       base = table
       while path.length > 1
         part = path.delete_at(0)
@@ -36,14 +32,13 @@ module Filterable
 
       column = base.columns_hash[path.first]
 
-      #unless column
-      #  raise ArgumentError, "unknown column '#{args[0][:column]}'"
-      #end
+      unless column
+        raise ArgumentError, "unknown attribute '#{path.first}' for #{base.name}"
+      end
 
-      options[:table]     ||= base.table_name
-      options[:column]      = column.name
-      options[:column_type] = column.type
-
+      options[:table]          = base.table_name
+      options[:attribute]      = column.name
+      options[:attribute_type] = column.type
 
       options
     end

@@ -13,7 +13,7 @@ class TestAssociations < Test::Unit::TestCase
       Customer.class_eval do
         include Filterable
         filter_definition do |filter|
-          filter.city :column => 'city.name'
+          filter.city :attribute => 'city.name'
         end
         default_filters_for_all_attributes
       end
@@ -21,8 +21,8 @@ class TestAssociations < Test::Unit::TestCase
       Order.class_eval do
         include Filterable
         filter_definition do |filter|
-          filter.customer_name :column => 'customer.name'
-          filter.city :column => 'customer.city.name'
+          filter.customer_name :attribute => 'customer.name'
+          filter.city :attribute => 'customer.city.name'
         end
         default_filters_for_all_attributes
       end

@@ -25,11 +25,11 @@ module Filterable
 
     def initialize base, options
       #@base               = base
-      raise ArgumentError, "no default strategy defined for '#{options[:column_type]}'" unless @@default_strategy[options[:column_type]]
-      @column             = "#{options[:table]}.#{options[:column]}"
+      raise ArgumentError, "no default strategy defined for '#{options[:attribute_type]}'" unless @@default_strategy[options[:attribute_type]]
+      @column             = "#{ActiveRecord::Base.connection.quote_column_name(options[:table])}.#{ActiveRecord::Base.connection.quote_column_name(options[:attribute])}"
       @name               = "#{options[:name]}_filter"
-      @strategy           = options[:strategy] || @@default_strategy[options[:column_type]][:patterns]
-      @default_strategy   = options[:strategy] || @@default_strategy[options[:column_type]][:default]
+      @strategy           = options[:strategy] || @@default_strategy[options[:attribute_type]][:patterns]
+      @default_strategy   = options[:strategy] || @@default_strategy[options[:attribute_type]][:default]
       @scope              = scope_rails_2(base)
     end
 
