@@ -26,11 +26,12 @@ module Filterable
     def initialize base, options
       #@base               = base
       raise ArgumentError, "no default strategy defined for '#{options[:attribute_type]}'" unless @@default_strategy[options[:attribute_type]]
-      @column             = "#{ActiveRecord::Base.connection.quote_column_name(options[:table])}.#{ActiveRecord::Base.connection.quote_column_name(options[:attribute])}"
+      @column             = "#{ActiveRecord::Base.connection.quote_column_name(options[:table])}.#{ActiveRecord::Base.connection.quote_column_name(options[:column])}"
       @name               = "#{options[:name]}_filter"
       @strategy           = options[:strategy] || @@default_strategy[options[:attribute_type]][:patterns]
       @default_strategy   = options[:strategy] || @@default_strategy[options[:attribute_type]][:default]
       @scope              = scope_rails_2(base)
+      @path               = options[:attribute].split('.')[0...-1] # association path without attribute name
     end
 
 
@@ -38,7 +39,7 @@ module Filterable
 
     def scope_rails_2 base
       base.named_scope @name, lambda {|value|
-        {:conditions => condition(value)}
+        {:conditions => condition(value), :include => include_option(@path, {})}
       }
     end
 
@@ -92,6 +93,15 @@ module Filterable
 
     def equal value
       ["#{column} = ?", value]
+    end
+
+    def include_option(path, hash)
+      if path.length > 1
+        hash[path.first] = include_option(path[1..-1], {})
+        hash
+      else
+        path.first
+      end
     end
 
   end

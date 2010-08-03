@@ -45,17 +45,17 @@ class TestAssociations < Test::Unit::TestCase
     context "filter_definition" do
 
       should "find all products purchased by Meiers" do
-        orders = Order.scoped(:include => :customer).filter_by(:customer_name => 'Meier')
+        orders = Order.filter_by(:customer_name => 'Meier')
         assert_equal 4, orders.size
       end
 
       should "find all products purchased from customers in Zurich" do
-        orders = Order.scoped(:include => {:customer => :city}).filter_by(:city => 'Zurich')
+        orders = Order.filter_by(:city => 'Zurich')
         assert_equal 4, orders.size
       end
 
       should "find all products purchased from Meier in Zurich" do
-        orders = Order.scoped(:include => {:customer => :city}).filter_by(:city => 'Zurich', :customer_name => 'Meier')
+        orders = Order.filter_by(:city => 'Zurich', :customer_name => 'Meier')
         assert_equal 2, orders.size
       end
 

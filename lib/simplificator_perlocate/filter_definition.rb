@@ -30,7 +30,7 @@ module Filterable
       end
 
       options[:table]          = base.table_name
-      options[:attribute]      = column.name
+      options[:column]      = column.name
       options[:attribute_type] = column.type
 
       options
