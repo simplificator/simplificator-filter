@@ -23,17 +23,10 @@ module Filterable
       options[:name]   = name
       options[:attribute] = (options[:attribute] || name).to_s
 
-      path = options[:attribute].split('.')
-      base = table
-      while path.length > 1
-        part = path.delete_at(0)
-        base = base.reflect_on_association(part.to_sym).class_name.constantize
-      end
-
-      column = base.columns_hash[path.first]
+      base, column = walk_attribute_path(options[:attribute])
 
       unless column
-        raise ArgumentError, "unknown attribute '#{path.first}' for #{base.name}"
+        raise ArgumentError, "Can not resolve path #{options[:attribute]} on #{base.class.name}"
       end
 
       options[:table]          = base.table_name
@@ -45,6 +38,19 @@ module Filterable
 
     def reference_filter
 
+    end
+
+    private
+    # Walk a attribute path and find the base model and the name of the attribute
+    # "orders.items.price" => [Item, "price"]
+    def walk_attribute_path(attribute)
+      path = attribute.split('.')
+      base = table
+      while path.length > 1
+        part = path.delete_at(0)
+        base = base.reflect_on_association(part.to_sym).class_name.constantize
+      end
+      [base, base.columns_hash[path.first.to_s]]
     end
 
   end
