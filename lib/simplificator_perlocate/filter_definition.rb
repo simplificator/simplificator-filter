@@ -26,15 +26,24 @@ module Filterable
     def condition_options name, options
       options[:name]   = name
       options[:column] = (options[:column] || name).to_s
-      column = table.columns_hash[options[:column]]
+
+      path = options[:column].split('.')
+      base = table
+      while path.length > 1
+        part = path.delete_at(0)
+        base = base.reflect_on_association(part.to_sym).class_name.constantize
+      end
+
+      column = base.columns_hash[path.first]
 
       #unless column
       #  raise ArgumentError, "unknown column '#{args[0][:column]}'"
       #end
 
-      options[:table]     ||= table.table_name
+      options[:table]     ||= base.table_name
       options[:column]      = column.name
       options[:column_type] = column.type
+
 
       options
     end

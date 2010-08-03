@@ -37,16 +37,17 @@ module Filterable
     def filter_by parameters
       if parameters
         @filter = FilterParameters.new(self, parameters)
-        parameters.inject(nil) do |scope, parameter|
+        parameters.inject(self.scoped) do |scope, parameter|
           key, value = parameter
-          if filter_condition = filter_definition[key]
-            (scope || self).send(filter_condition.name, value)
+
+          if filter_condition = filter_definition[key.to_sym]
+            scope.send(filter_condition.name, value)
+          else
+            scope
           end
         end
       else
-        # TODO ugly hack replace it!!!
-        named_scope(:foo_filter, :conditions => '1=1')
-        foo_filter
+        scoped
       end
     end
 

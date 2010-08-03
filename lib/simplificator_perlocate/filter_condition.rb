@@ -91,7 +91,7 @@ module Filterable
     end
 
     def equal value
-      {column => value}
+      ["#{column} = ?", value]
     end
 
   end

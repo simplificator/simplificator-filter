@@ -13,7 +13,7 @@ class TestAssociations < Test::Unit::TestCase
       Customer.class_eval do
         include Filterable
         filter_definition do |filter|
-          filter.city :association => :city, :filter => 'name'
+          filter.city :column => 'city.name'
         end
         default_filters_for_all_attributes
       end
@@ -21,8 +21,8 @@ class TestAssociations < Test::Unit::TestCase
       Order.class_eval do
         include Filterable
         filter_definition do |filter|
-          filter.customer_name :association => :customer, :filter => 'name'
-          filter.city :association => :customer, :filter => 'city'
+          filter.customer_name :column => 'customer.name'
+          filter.city :column => 'customer.city.name'
         end
         default_filters_for_all_attributes
       end
@@ -44,27 +44,18 @@ class TestAssociations < Test::Unit::TestCase
 
     context "filter_definition" do
 
-      should "x" do
-        true
-      end
-
-      should "find all carpet products" do
-        orders = Order.filter_by(:product_name => 'carpet').all(:joins => :customer)
-        assert_equal 4, orders.size
-      end
-
       should "find all products purchased by Meiers" do
-        orders = Order.filter_by(:customer_name => 'Meier').all(:joins => :customers)
+        orders = Order.scoped(:include => :customer).filter_by(:customer_name => 'Meier')
         assert_equal 4, orders.size
       end
 
       should "find all products purchased from customers in Zurich" do
-        Order.filter_by(:city => 'Zurich').all(:joins => {:customers => :city})
+        orders = Order.scoped(:include => {:customer => :city}).filter_by(:city => 'Zurich')
         assert_equal 4, orders.size
       end
 
       should "find all products purchased from Meier in Zurich" do
-        Order.filter_by(:city => 'Zurich', :customer_name => 'Meier').all(:joins => {:customers => :city})
+        orders = Order.scoped(:include => {:customer => :city}).filter_by(:city => 'Zurich', :customer_name => 'Meier')
         assert_equal 2, orders.size
       end
 
