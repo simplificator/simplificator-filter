@@ -32,6 +32,7 @@ module Filterable
       @default_strategy   = options[:strategy] || @@default_strategy[options[:attribute_type]][:default]
       @scope              = scope_rails_2(base)
       @path               = options[:attribute].split('.')[0...-1] # association path without attribute name
+      @include_option     = options[:include]
     end
 
 
@@ -39,11 +40,14 @@ module Filterable
 
     def scope_rails_2 base
       base.named_scope @name, lambda {|value|
-        {:conditions => condition(value), :include => include_option(@path, {})}
+        scope = {:conditions => condition(value)}
+        scope[:include] = @include_option if @include_option
+        scope
       }
     end
 
     def scope_rails_3 base
+      # TODO: add include_option
       base.scope @name, lambda {|value|
         where condition(value)
       }
@@ -95,14 +99,6 @@ module Filterable
       ["#{column} = ?", value]
     end
 
-    def include_option(path, hash)
-      if path.length > 1
-        hash[path.first] = include_option(path[1..-1], {})
-        hash
-      else
-        path.first
-      end
-    end
 
   end
 

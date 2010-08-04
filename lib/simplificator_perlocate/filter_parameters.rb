@@ -4,7 +4,10 @@ module Filterable
 
     def initialize base, options = {}
       base.filter_definition.keys.each {|key| self[key.to_sym] = nil}
-      options.each {|key, value| self[key.to_sym] = value} if options
+      options.each do |key, value|
+        raise NoMethodError, "undefined method '#{key}' for #{self.inspect}::#{self.class}" unless has_key?(key.to_sym)
+        self[key.to_sym] = value
+      end if options
     end
 
     def respond_to? name

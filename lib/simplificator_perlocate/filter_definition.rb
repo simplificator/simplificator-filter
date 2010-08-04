@@ -22,35 +22,42 @@ module Filterable
     def condition_options name, options
       options[:name]   = name
       options[:attribute] = (options[:attribute] || name).to_s
+      path_with_attribute = options[:attribute].split('.')
+      path_without_attribute = path_with_attribute[0...-1]
 
-      base, column = walk_attribute_path(options[:attribute])
+      column, base = find_column_and_table(path_with_attribute, table)
 
       unless column
         raise ArgumentError, "Can not resolve path #{options[:attribute]} on #{base.class.name}"
       end
 
-      options[:table]          = base.table_name
-      options[:column]      = column.name
-      options[:attribute_type] = column.type
+      options[:table]           = base.table_name
+      options[:column]          = column.name
+      options[:attribute_type]  = column.type
+      options[:include]         = build_include_option(path_without_attribute, {})
 
       options
     end
 
-    def reference_filter
-
-    end
-
     private
     # Walk a attribute path and find the base model and the name of the attribute
-    # "orders.items.price" => [Item, "price"]
-    def walk_attribute_path(attribute)
-      path = attribute.split('.')
-      base = table
-      while path.length > 1
-        part = path.delete_at(0)
-        base = base.reflect_on_association(part.to_sym).class_name.constantize
+    # "customer.orders.items.price" => [Item, "price"]
+    def find_column_and_table(path, base)
+      if path.length > 1
+        find_column_and_table(path[1..-1], base.reflect_on_association(path.first.to_sym).class_name.constantize)
+      else
+        [base.columns_hash[path.first.to_s], base]
       end
-      [base, base.columns_hash[path.first.to_s]]
+    end
+
+    # "customer.orders.items" =>  :customer => {:orders => :items}
+    def build_include_option(path, hash)
+      if path.length > 1
+        hash[path.first] = build_include_option(path[1..-1], {})
+        hash
+      else
+        path.first
+      end
     end
 
   end

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alessandro Di Maria", "Pascal Betz"]
-  s.date = %q{2010-07-23}
+  s.date = %q{2010-08-04}
   s.description = %q{An attempt to generalize filtering of AR objects}
   s.email = %q{info@simplificator.com}
   s.extra_rdoc_files = [
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "init.rb",
      "lib/simplificator-percolate.rb",
      "lib/simplificator_perlocate/filter_condition.rb",
      "lib/simplificator_perlocate/filter_definition.rb",
@@ -34,12 +35,13 @@ Gem::Specification.new do |s|
      "test/test_helper.rb",
      "test/unit/associations_test.rb",
      "test/unit/default_filters_test.rb",
+     "test/unit/filter_parameters_test.rb",
      "test/unit/filterable_test.rb"
   ]
   s.homepage = %q{http://github.com/simplificator/simplificator-percolate}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{An attempt to generalize filtering of AR objects}
   s.test_files = [
     "test/models.rb",
@@ -55,7 +57,7 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<shoulda>, [">= 2.11"])
       s.add_development_dependency(%q<redgreen>, [">= 0"])
       s.add_runtime_dependency(%q<activerecord>, [">= 2.0.0"])

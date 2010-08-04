@@ -6,8 +6,8 @@ module Filterable
 
   module ClassMethods
 
-    def filter
-      @filter ||= FilterParameters.new(self)
+    def filter(options = {})
+      FilterParameters.new(self, options)
     end
 
     # creates a new filter definition if a block is passed

@@ -32,6 +32,28 @@ class TestFilterable < Test::Unit::TestCase
         assert_respond_to Foo.filter, :fuzzy_name=
       end
 
+
+    end
+
+    context 'filter' do
+      should 'provide an empty filter' do
+        assert Foo.filter
+      end
+
+      should 'accept empty parameters for filter' do
+        assert Foo.filter({})
+      end
+
+      should 'not accept unknown parameters for filter' do
+        assert_raise NoMethodError do
+          Foo.filter({:bar => 'baz'})
+        end
+      end
+
+      should 'accept known parameters for filter' do
+        assert_equal 'baz', Foo.filter({:fuzzy_name => 'baz'}).fuzzy_name
+      end
+
     end
 
     context "filter_by" do
