@@ -5,7 +5,7 @@ class Foo < ActiveRecord::Base
 
   include Filterable
   filter_definition do |filter|
-    filter.fuzzy_name  :strategy => :like, :attribute => 'product_name'
+    filter.fuzzy_name  :strategy => :like, :attribute => 'product_name', :include_blank => true
     filter.price_range :strategy => :between, :attribute => 'price'
     filter.purchased_at :strategy => :equal
   end
@@ -107,6 +107,16 @@ class TestFilterable < Test::Unit::TestCase
         orders = Foo.filter_by(:price_range => '15 - 45').all(:conditions => {:product_name => 'water bottle'})
         assert_equal 1, orders.size
         assert_equal 'water bottle', orders.first.product_name
+      end
+
+      should "accept blank for fuzzy name" do
+        orders = Foo.filter_by(:fuzzy_name => '')
+        assert_not_equal({}, orders.context)
+      end
+
+      should "not accept blank for price range" do
+        orders = Foo.filter_by(:price_range => '')
+        assert_equal({}, orders.context)
       end
 
     end

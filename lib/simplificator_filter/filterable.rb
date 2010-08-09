@@ -40,8 +40,8 @@ module Filterable
         parameters.inject(self.scoped({})) do |scope, parameter|
           key, value = parameter
 
-          if filter_condition = filter_definition[key.to_sym]
-            scope.send(filter_condition.name, value)
+          if (filter_condition = filter_definition[key.to_sym]) && !value.blank? || filter_condition.include_blank?
+            scope.send(filter_condition.scope_name, value)
           else
             scope
           end

@@ -2,7 +2,7 @@ module Filterable
 
   class FilterCondition
 
-    attr_reader :name, :scope, :column#, :base
+    attr_reader :scope_name, :scope, :column#, :base
 
 
     @@default_strategy = {:string   => { :patterns => [:like, :begins_with, :ends_with], :default => :like },
@@ -27,28 +27,35 @@ module Filterable
       #@base               = base
       raise ArgumentError, "no default strategy defined for '#{options[:attribute_type]}'" unless @@default_strategy[options[:attribute_type]]
       @column             = "#{ActiveRecord::Base.connection.quote_column_name(options[:table])}.#{ActiveRecord::Base.connection.quote_column_name(options[:column])}"
-      @name               = "#{options[:name]}_filter"
+      @name               = options[:name]
+      @scope_name         = "#{options[:name]}_filter"
       @strategy           = options[:strategy] || @@default_strategy[options[:attribute_type]][:patterns]
       @default_strategy   = options[:strategy] || @@default_strategy[options[:attribute_type]][:default]
       @scope              = scope_rails_2(base)
       @path               = options[:attribute].split('.')[0...-1] # association path without attribute name
       @include_option     = options[:include]
+      @include_blank      = options[:include_blank] || false
+    end
+
+    def include_blank?
+      !!@include_blank
     end
 
 
   protected
 
     def scope_rails_2 base
-      base.named_scope @name, lambda {|value|
+      base.named_scope @scope_name, lambda {|value|
         scope = {:conditions => condition(value)}
         scope[:include] = @include_option if @include_option
+        scope[:context] = {:filters => { @name.to_sym => value} }
         scope
       }
     end
 
     def scope_rails_3 base
       # TODO: add include_option
-      base.scope @name, lambda {|value|
+      base.scope @scope_name, lambda {|value|
         where condition(value)
       }
     end

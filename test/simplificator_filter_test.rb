@@ -1,6 +1,6 @@
-require 'test_helper'
+ require 'test_helper'
 
-class TestSimplificatorPercolate < Test::Unit::TestCase
+class TestSimplificatorFilter < Test::Unit::TestCase
 
   context "Filterable" do
 

@@ -1,1 +1,1 @@
-require 'simplificator-percolate'
+require 'simplificator-filter'
