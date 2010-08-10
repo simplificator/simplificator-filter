@@ -32,19 +32,19 @@ module Filterable
     end
     alias default_filter_for_attribute default_filters_for_attributes
 
-
+    #TODO DRY this method
     # @return NamedScope (Rails 2) or Scope (Rails 3)
     def filter_by parameters
       if parameters
-        @filter = FilterParameters.new(self, parameters)
+        @order = FilterParameters.new(self, parameters)
         parameters.inject(self.scoped({})) do |scope, parameter|
           key, value = parameter
 
-          if (filter_condition = filter_definition[key.to_sym]) && !value.blank? || filter_condition.include_blank?
-            scope.send(filter_condition.scope_name, value)
-          else
-            scope
+          if (filter_condition = filter_definition[key.to_sym]) && (!value.blank? || filter_condition.include_blank?)
+            scope = scope.send(filter_condition.scope_name, value)
           end
+
+          scope
         end
       else
         scoped({})
@@ -52,5 +52,4 @@ module Filterable
     end
 
   end
-
 end
