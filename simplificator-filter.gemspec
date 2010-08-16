@@ -55,18 +55,18 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<shoulda>, [">= 2.11"])
       s.add_development_dependency(%q<redgreen>, [">= 0"])
       s.add_runtime_dependency(%q<activerecord>, [">= 2.0.0"])
-      s.add_runtime_dependency(%q<content_aware_scope>, [">= 0.0.2"])
+      s.add_runtime_dependency(%q<context_aware_scope>, [">= 0.0.2"])
     else
       s.add_dependency(%q<shoulda>, [">= 2.11"])
       s.add_dependency(%q<redgreen>, [">= 0"])
       s.add_dependency(%q<activerecord>, [">= 2.0.0"])
-      s.add_dependency(%q<content_aware_scope>, [">= 0.0.2"])
+      s.add_dependency(%q<context_aware_scope>, [">= 0.0.3"])
     end
   else
     s.add_dependency(%q<shoulda>, [">= 2.11"])
     s.add_dependency(%q<redgreen>, [">= 0"])
     s.add_dependency(%q<activerecord>, [">= 2.0.0"])
-    s.add_dependency(%q<content_aware_scope>, [">= 0.0.2"])
+    s.add_dependency(%q<context_aware_scope>, [">= 0.0.2"])
   end
 end
 
