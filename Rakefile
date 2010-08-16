@@ -13,7 +13,7 @@ begin
     gem.add_development_dependency "shoulda", ">= 2.11"
     gem.add_development_dependency "redgreen"
     gem.add_dependency "activerecord", ">= 2.0.0"
-    gem.add_dependency "context_aware_scope", ">= 0.0.3"
+    gem.add_dependency "context_aware_scope", ">= 0.1.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
