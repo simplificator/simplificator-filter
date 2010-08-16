@@ -10,4 +10,8 @@ modules.each do |strategy|
   ActiveRecord::NamedScope::Scope.instance_eval do
     include strategy.constantize::Scope
   end
+
+  ActiveRecord::Base.instance_eval do
+    include strategy.constantize
+  end
 end
