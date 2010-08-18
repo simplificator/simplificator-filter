@@ -38,7 +38,7 @@ module Filterable
     end
 
     def include_blank?
-      !!@include_blank
+      @include_blank
     end
 
 
