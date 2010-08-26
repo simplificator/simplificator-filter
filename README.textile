@@ -2,19 +2,104 @@ h1. Simplificator Filter
 
 An Extension to ActiveRecord in order to manage filtering and ordering of collections.
 
-h1. Usage
+h2. Install
 
 <pre>
-
+  gem install simplificator-filter
 </pre>
 
-h3. Filter
+h2. Usage
+
+You can define filters and orders in your models and then using this definitions to retrieve the data.
+See the filter examples below.
+
+h2. Filter
+
+h3. Definition
+
+Assume you have a product model with name:string, price:integer and available_at:date as attributes. Then you could define the following filter definition in your order class.
+<pre>
+  filter_definition do |filter|
+    filter.fuzzy_name  :strategy => :like, :attribute => 'name'
+    filter.price_range :strategy => :between, :attribute => 'price'
+    filter.purchased_at :strategy => :equal
+  end
+</pre>
+
+You can use different strategies according to the attributes type. For string you can define :like, :begins_wiht, :end_with or :equal (See filter strategies for more information).
+The strategy option is not mandatory, if not set the default strategy for that attributes type would be used. For string :like is the default strategy.
+
+If you just want a filters with the same name as the attribute and the default strategy you can use:
 
 <pre>
-
+  default_filter_for_attribute :name
+  default_filters_for_attributes :name, :price
 </pre>
 
-h3. Order
+or just define for all your attributes a default filter:
+
+<pre>
+  default_filters_for_all_attributes
+</pre>
+
+h3. filter_by
+
+The first definition example, you can you now the filter_by class method:
+
+<pre>
+  Product.filter_by(:fuzzy_name => 'carpet')
+  Product.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45')
+  Product.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45', :purchased_at => 1.day.ago.to_date)
+</pre>
+
+filter_by returns a scope, therefore you can use it with your other scopes or with will_paginate.
+
+<pre>
+  Product.cheap.filter_by(:fuzzy_name => 'carpet').red
+  Product.cheap.filter_by(:fuzzy_name => 'carpet').red.paginate(:page => 2)
+</pre>
+
+h3. Associations
+
+h3. Filter Forms
+
+<pre>
+  <% form_for @products.filter |f| %>
+    <%= f.input_field f.fuzzy_name %>
+    <%= f.input_field f.price_range %>
+    <%= f.input_field f.purchased_at %>
+    <%= f.sumbit_tag 'Filter' %>
+  <% end %>
+</pre>
+
+In your controller you can just use:
+<pre>
+  @products = Product.filter_by params[:filter]
+</pre>
+
+h3. View Helpers
+
+h3. Filter Strategies
+
+table.
+{font-weight:bold}.|Type     | strategies    | default |
+|string   | :like, :begins_with, :ends_with, | :like   |
+|text     | :like, :begins_with, :ends_with, | :like   |
+|integer  | :equal, :between                 | :equal  |
+|float    | :equal, :between                 | :equal  |
+|time     | :equal, :between                 | :equal  |
+|date     | :equal, :between                 | :equal  |
+|datetime | :equal, :between                 | :equal  |
+|binary   | :equal,                          | :equal  |
+|boolean  | :equal,                          | :equal  |
+
+h3. Patterns
+TODO
+<pre>
+  '*bottle' => :begins_with
+</pre>
+
+h2. Order
 
 <pre>
 
