@@ -1,3 +1,4 @@
+=begin
 module Orderable
   module Scope
     def self.included(base)
@@ -24,3 +25,4 @@ module Orderable
     end
   end
 end
+=end

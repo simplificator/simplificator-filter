@@ -31,7 +31,7 @@ module Filterable
       @scope_name         = "#{options[:name]}_filter"
       @strategy           = options[:strategy] || @@default_strategy[options[:attribute_type]][:patterns]
       @default_strategy   = options[:strategy] || @@default_strategy[options[:attribute_type]][:default]
-      @scope              = scope_rails_2(base)
+      @scope              = scope_rails_2(base) # => Proc named_scope.rb:96
       @path               = options[:attribute].split('.')[0...-1] # association path without attribute name
       @include_option     = options[:include]
       @include_blank      = options[:include_blank] || false
@@ -54,7 +54,7 @@ module Filterable
     end
 
     def scope_rails_3 base
-      # TODO: add include_option
+      # TODO: add include_option, context
       base.scope @scope_name, lambda {|value|
         where condition(value)
       }

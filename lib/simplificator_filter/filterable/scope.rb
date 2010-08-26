@@ -1,3 +1,5 @@
+=begin
+
 module Filterable
   module Scope
     def self.included(base)
@@ -19,7 +21,9 @@ module Filterable
             scoped({})
           end
         end
+
       end
     end
   end
 end
+=end

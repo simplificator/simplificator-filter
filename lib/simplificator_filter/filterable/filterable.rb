@@ -5,50 +5,30 @@ module Filterable
   end
 
   module ClassMethods
+    include ScopeLogic::ClassMethods
 
     def filter(options = {})
-      FilterParameters.new(self, options)
+      raise Exception, "filter does not exists anymore use result_array.context[:filters]"
+      #filter_definition.values.first.scope.context[:filter]
+      #context[:filters]
+      #FilterParameters.new(self, options)
     end
 
-    # creates a new filter definition if a block is passed
-    # if no block is passed it returns the filter definition object
-    def filter_definition
-      if block_given?
-        yield @filter_definition ||= FilterDefinition.new(self)
-      else
-        @filter_definition
-      end
+    def filter_definition &block
+      scope_definition :filter, &block
     end
 
     def default_filters_for_all_attributes
-      default_filters_for_attributes *self.column_names.reject {|c| c == self.primary_key.to_s }
+      default_scopes_for_all_attributes :filter
     end
 
     def default_filters_for_attributes *attributes
-      @filter_definition ||= FilterDefinition.new(self)
-      attributes.each do |attribute|
-        @filter_definition.send(attribute)
-      end
+      default_scopes_for_attributes :filter, *attributes
     end
     alias default_filter_for_attribute default_filters_for_attributes
 
-    #TODO DRY this method
-    # @return NamedScope (Rails 2) or Scope (Rails 3)
     def filter_by parameters
-      if parameters
-        @order = FilterParameters.new(self, parameters)
-        parameters.inject(self.scoped({})) do |scope, parameter|
-          key, value = parameter
-
-          if (filter_condition = filter_definition[key.to_sym]) && (!value.blank? || filter_condition.include_blank?)
-            scope = scope.send(filter_condition.scope_name, value)
-          end
-
-          scope
-        end
-      else
-        scoped({})
-      end
+      scoped_by :filter_definition, parameters
     end
 
   end

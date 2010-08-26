@@ -1,0 +1,21 @@
+h1. Simplificator Filter
+
+An Extension to ActiveRecord in order to manage filtering and ordering of collections.
+
+h1. Usage
+
+<pre>
+
+</pre>
+
+h3. Filter
+
+<pre>
+
+</pre>
+
+h3. Order
+
+<pre>
+
+</pre>

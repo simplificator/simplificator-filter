@@ -7,48 +7,28 @@ module Orderable
   module ClassMethods
 
     def order(options = {})
-      OrderParameters.new(self, options)
+      raise Exception, "order does not exists anymore use result_array.context[:filters]"
+      #filter_definition.values.first.scope.context[:filter]
+      #context[:filters]
+      #FilterParameters.new(self, options)
     end
 
-    # creates a new filter definition if a block is passed
-    # if no block is passed it returns the filter definition object
-    def order_definition
-      if block_given?
-        yield @order_definition ||= OrderDefinition.new(self)
-      else
-        @order_definition
-      end
+    def order_definition &block
+      scope_definition :order, &block
     end
 
     def default_orders_for_all_attributes
-      default_orders_for_attributes *self.column_names.reject {|c| c == self.primary_key.to_s }
+      default_scopes_for_all_attributes :order
     end
 
     def default_orders_for_attributes *attributes
-      @order_definition ||= OrderDefinition.new(self)
-      attributes.each do |attribute|
-        @order_definition.send(attribute)
-      end
+      default_scopes_for_attributes :order, *attributes
     end
     alias default_order_for_attribute default_orders_for_attributes
 
-    #TODO DRY this method
-    # @return NamedScope (Rails 2) or Scope (Rails 3)
     def order_by parameters
-      if parameters
-        @order = OrderParameters.new(self, parameters)
-        parameters.inject(self.scoped({})) do |scope, parameter|
-          key, value = parameter
-
-          if (order_condition = order_definition[key.to_sym]) && !value.blank?
-            scope = scope.send(order_condition.scope_name, value)
-          end
-
-          scope
-        end
-      else
-        scoped({})
-      end
+      scoped_by :order_definition, parameters
     end
+
   end
 end

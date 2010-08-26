@@ -12,6 +12,9 @@ class Bar < ActiveRecord::Base
   order_definition do |order|
     order.product_name
   end
+
+  named_scope :carpet, lambda {|value| {:context => {:name => value}}} # :context => {:name => 'carpet'} #
+  named_scope :cheap, lambda {|value| {:context => {:price => value}}}  # :context => {:price => 'cheap'}  #
 end
 
 class MixedTest < Test::Unit::TestCase
@@ -28,6 +31,19 @@ class MixedTest < Test::Unit::TestCase
       assert_equal 2, result.size
       assert_equal 'red carpet', result.first.product_name
       assert_equal({:filters => {:fuzzy_name => 'pet'}, :order => {:product_name => :desc}}, result.context)
+    end
+
+    should 'be able to chain order_by and filter_by' do
+      result = Bar.order_by(:product_name => 'desc').filter_by(:fuzzy_name => 'pet')
+      assert_equal 2, result.size
+      assert_equal 'red carpet', result.first.product_name
+      assert_equal({:filters => {:fuzzy_name => 'pet'}, :order => {:product_name => :desc}}, result.context)
+    end
+
+    should "have same context indedepent of the position of filter_by" do
+      leading = Bar.filter_by(:fuzzy_name => 'pet').carpet('carpet').cheap('cheap')
+      rear = Bar.carpet('carpet').cheap('cheap').filter_by(:fuzzy_name => 'pet')
+      assert_equal leading.context, rear.context
     end
 
     teardown do

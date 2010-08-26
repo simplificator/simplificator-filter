@@ -19,23 +19,24 @@ class TestFilterable < Test::Unit::TestCase
 
     context "filter_definition" do
 
-      should "return filter parameters object" do
-        assert_instance_of Filterable::FilterParameters, Foo.filter
-      end
+      #should "return filter parameters object" do
+      #  assert_instance_of Filterable::FilterParameters, Foo.filter
+      #end
 
       should "have a filter definition" do
         assert_instance_of Filterable::FilterDefinition, Foo.filter_definition
       end
 
-      should "accessors for fuzzy_name" do
-        assert_respond_to Foo.filter, :fuzzy_name
-        assert_respond_to Foo.filter, :fuzzy_name=
-      end
+      #should "accessors for fuzzy_name" do
+      #  assert_respond_to Foo.filter, :fuzzy_name
+      #  assert_respond_to Foo.filter, :fuzzy_name=
+      #end
 
 
     end
 
     context 'filter' do
+=begin
       should 'provide an empty filter' do
         assert Foo.filter
       end
@@ -53,7 +54,7 @@ class TestFilterable < Test::Unit::TestCase
       should 'accept known parameters for filter' do
         assert_equal 'baz', Foo.filter({:fuzzy_name => 'baz'}).fuzzy_name
       end
-
+=end
     end
 
     context "filter_by" do
