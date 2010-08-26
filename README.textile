@@ -17,19 +17,20 @@ h2. Filter
 
 h3. Definition
 
-Assume you have a product model with name:string, price:integer and available_at:date as attributes. Then you could define the following filter definition in your product class.
+Assume you have a product model with name:string, price:integer and available_as_of:date as attributes. Then you could define the following filter definition in your product class.
 <pre>
   filter_definition do |filter|
     filter.fuzzy_name  :strategy => :like, :attribute => 'name'
     filter.price_range :strategy => :between, :attribute => 'price'
-    filter.purchased_at :strategy => :equal
+    filter.available_as_of :strategy => :equal
   end
 </pre>
 
-You can use different strategies according to the attributes type. For string you can define :like, :begins_wiht, :end_with or :equal (See filter strategies for more information).
-The strategy option is not mandatory, if not set the default strategy for that attributes type would be used. For string :like is the default strategy.
+You can use different strategies according to the attributes type. For string you can define :like, :begins_with, :ends_with or :equal.
+The strategy option is not mandatory, if not set then the default strategy for that attributes type is used. For a string type this would be the :like strategy.
+(See filter strategies for more information)
 
-If you just want a filters with the same name as the attribute and the default strategy you can use:
+If you just want a filter with the same name as the attribute and its default strategy, you can use:
 
 <pre>
   default_filter_for_attribute :name
@@ -44,12 +45,12 @@ or just define for all your attributes a default filter:
 
 h3. filter_by
 
-The first definition example, you can you now the filter_by class method:
+Keeping the first definition as example, you can now use the filter_by class method:
 
 <pre>
   Product.filter_by(:fuzzy_name => 'carpet')
   Product.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45')
-  Product.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45', :purchased_at => 1.day.ago.to_date)
+  Product.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45', :available_as_of => 1.day.ago.to_date)
 </pre>
 
 filter_by returns a scope, therefore you can use it with your other scopes or with will_paginate.
@@ -60,6 +61,25 @@ filter_by returns a scope, therefore you can use it with your other scopes or wi
 </pre>
 
 h3. Associations
+
+You can even filter associated attributes. Let's add an order model with following associations and filter definition.
+
+<pre>
+  belongs_to :product
+  belongs_to :customer
+
+  filter_definition do |filter|
+    filter.customer_name :strategy => :like, :attribute => 'customer.name'
+    filter.product_name :strategy => :like, :attribute => 'product.name'
+    filter.purchased_at :strategy => :equal
+  end
+</pre>
+
+The filter_by works still the same way, all necessary tables are included automatically.
+
+<pre>
+  Product.filter_by(:customer_name => 'foo', :product_name => 'magic carpet')
+</pre>
 
 h3. Filter Forms
 
@@ -94,10 +114,29 @@ table.
 |boolean  | :equal,                          | :equal  |
 
 h3. Patterns
-TODO
+
+If you define more than one strategy for an attribute or leave it completly.
+
 <pre>
-  '*bottle' => :begins_with
+  filter_definition do |filter|
+    filter.name :strategy => [:begins_with, :ends_with]
+    filter.price
+  end
 </pre>
+
+In this cases filter_by tries to match a pattern against the passed value to detect the right strategy.
+If name matches "* carpet" a :ends_with strategy would be applied, if it would match "magic* " a :begins_with would be used.
+If no pattern matches, then default strategy is used.
+The only difference between the first and the second filter definition is: If a pattern could be found but it is not included in the array passed, an ArgumentError will be raised.
+
+Patterns
+
+table.
+| pattern                    | strategy      |
+| /^\*(.*?)\*$/              | :like         |
+| /^\*(.*?)$/,               | :ends_with    |
+| /^(.*?)\*$/,               | :begins_with  |
+| /^(-?\d+)\s?-\s?(-?\d+)$/  | :between      |
 
 h2. Order
 
