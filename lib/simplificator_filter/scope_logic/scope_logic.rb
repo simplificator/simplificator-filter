@@ -29,7 +29,6 @@ module ScopeLogic
       end
     end
 
-    #TODO DRY this method
     # @return NamedScope (Rails 2) or Scope (Rails 3)
     def scoped_by name, parameters
       if parameters
