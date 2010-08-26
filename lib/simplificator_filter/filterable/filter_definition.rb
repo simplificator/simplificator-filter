@@ -2,14 +2,12 @@ module Filterable
 
   class FilterDefinition < ScopeLogic::Definition
 
-    def method_missing name, *args, &block
-      args = [{}] if args.empty?
-
-      options = condition_options(name, args[0])
-      self[name] =  if args[0][:class]
-        args[0][:class].constantize.new(table, options)
+    def create_condition name, options
+      condition_options = condition_options(name, options)
+      if options[:class]
+        options[:class].constantize.new(table, condition_options)
       else
-        FilterCondition.new(table, options)
+        FilterCondition.new(table, condition_options)
       end
     end
 

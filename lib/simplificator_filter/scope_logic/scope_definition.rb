@@ -8,28 +8,24 @@ module ScopeLogic
       @table = table
     end
 
-    #def [] name
-    #  if value = super
-    #    if value.instance_of? Hash
-    #      self[name] = create_condition(name, value)
-    #    end
-    #  end
-    #end
+    def [] name
+      if condition = super
+        if condition.instance_of? Hash
+          condition = self[name] = create_condition(name, condition)
+        end
+      end
+      condition
+    end
 
     def method_missing name, *args, &block
       args = [{}] if args.empty?
 
-      #self[name] = args[0] # lazy creation see def []
-      create_condition name, args[0] # eager creation
+      self[name] = args[0] # lazy creation see def []
+      #self[name] = create_condition(name, args[0]) # eager creation, creates a conflict with device_for in routes.rb
     end
 
     def create_condition name, options
-      options = condition_options(name, args[0])
-      if args[0][:class]
-        args[0][:class].constantize.new(table, options)
-      else
-        FilterCondition.new(table, options)
-      end
+      raise Exception, "overwritte by subclass"
     end
 
     def condition_options name, options
