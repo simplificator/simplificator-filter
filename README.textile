@@ -11,13 +11,13 @@ h2. Install
 h2. Usage
 
 You can define filters and orders in your models and then using this definitions to retrieve the data.
-See the filter examples below.
+See the examples below.
 
 h2. Filter
 
 h3. Definition
 
-Assume you have a product model with name:string, price:integer and available_at:date as attributes. Then you could define the following filter definition in your order class.
+Assume you have a product model with name:string, price:integer and available_at:date as attributes. Then you could define the following filter definition in your product class.
 <pre>
   filter_definition do |filter|
     filter.fuzzy_name  :strategy => :like, :attribute => 'name'
