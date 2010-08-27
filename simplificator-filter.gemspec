@@ -5,22 +5,23 @@
 
 Gem::Specification.new do |s|
   s.name = %q{simplificator-filter}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Alessandro Di Maria", "Pascal Betz"]
-  s.date = %q{2010-08-20}
+  s.authors = ["Alessandro Di Maria", "Pascal Betz", "Fabio Kuhn"]
+  s.date = %q{2010-08-27}
   s.description = %q{An attempt to generalize filtering of AR objects}
   s.email = %q{info@simplificator.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.textile"
   ]
   s.files = [
     ".document",
      ".gitignore",
+     "Gemfile",
      "LICENSE",
-     "README.rdoc",
+     "README.textile",
      "Rakefile",
      "VERSION",
      "init.rb",
@@ -29,12 +30,13 @@ Gem::Specification.new do |s|
      "lib/simplificator_filter/filterable/filter_definition.rb",
      "lib/simplificator_filter/filterable/filter_parameters.rb",
      "lib/simplificator_filter/filterable/filterable.rb",
-     "lib/simplificator_filter/filterable/scope.rb",
      "lib/simplificator_filter/orderable/order_condition.rb",
      "lib/simplificator_filter/orderable/order_definition.rb",
      "lib/simplificator_filter/orderable/order_parameters.rb",
      "lib/simplificator_filter/orderable/orderable.rb",
-     "lib/simplificator_filter/orderable/scope.rb",
+     "lib/simplificator_filter/scope_logic/scope_definition.rb",
+     "lib/simplificator_filter/scope_logic/scope_logic.rb",
+     "lib/simplificator_filter/scope_logic/scope_parameters.rb",
      "simplificator-filter.gemspec",
      "test/models.rb",
      "test/simplificator_filter_test.rb",
