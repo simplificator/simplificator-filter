@@ -4,13 +4,13 @@ class Bar < ActiveRecord::Base
   set_table_name 'orders'
 
   include Filterable
-  filter_definition do |filter|
-    filter.fuzzy_name  :strategy => :like, :attribute => 'product_name'
+  filter_definition do
+    fuzzy_name  :strategy => :like, :attribute => 'product_name'
   end
 
   include Orderable
-  order_definition do |order|
-    order.product_name
+  order_definition do
+    product_name
   end
 
   named_scope :carpet, lambda {|value| {:context => {:name => value}}} # :context => {:name => 'carpet'} #

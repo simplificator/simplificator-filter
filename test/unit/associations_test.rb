@@ -12,17 +12,17 @@ class TestAssociations < Test::Unit::TestCase
 
       Customer.class_eval do
         include Filterable
-        filter_definition do |filter|
-          filter.city :attribute => 'city.name'
+        filter_definition do
+          city :attribute => 'city.name'
         end
         default_filters_for_all_attributes
       end
 
       Order.class_eval do
         include Filterable
-        filter_definition do |filter|
-          filter.customer_name :attribute => 'customer.name'
-          filter.city :attribute => 'customer.city.name'
+        filter_definition do
+          customer_name :attribute => 'customer.name'
+          city :attribute => 'customer.city.name'
         end
         default_filters_for_all_attributes
       end

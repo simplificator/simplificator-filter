@@ -4,10 +4,10 @@ class Foo < ActiveRecord::Base
   set_table_name 'orders'
 
   include Filterable
-  filter_definition do |filter|
-    filter.fuzzy_name  :strategy => :like, :attribute => 'product_name', :include_blank => true
-    filter.price_range :strategy => :between, :attribute => 'price'
-    filter.purchased_at :strategy => :equal
+  filter_definition do
+    fuzzy_name  :strategy => :like, :attribute => 'product_name', :include_blank => true
+    price_range :strategy => :between, :attribute => 'price'
+    purchased_at :strategy => :equal
   end
   named_scope :cheap, :conditions => ["price < 15"]
   named_scope :carpets, :conditions => ["product_name LIKE ?", "%carpet%"]

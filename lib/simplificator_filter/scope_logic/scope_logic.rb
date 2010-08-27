@@ -4,12 +4,13 @@ module ScopeLogic
 
     # creates a new filter definition if a block is passed
     # if no block is passed it returns the filter definition object
-    def scope_definition scope_strategy
+    def scope_definition scope_strategy, &block
       definition_name  = "#{scope_strategy}_definition"  # 'filter_definition'
       definition_class = "#{scope_strategy.to_s.capitalize}able::#{scope_strategy.to_s.capitalize}Definition".constantize # Filterable::FilterDefinition
 
       if block_given?
-        yield instance_variable_get("@#{definition_name}") || instance_variable_set("@#{definition_name}", definition_class.new(self))
+        definition = instance_variable_get("@#{definition_name}") || instance_variable_set("@#{definition_name}", definition_class.new(self))
+        definition.instance_eval(&block)
       else
         instance_variable_get("@#{definition_name}")
       end
