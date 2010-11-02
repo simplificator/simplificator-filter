@@ -39,6 +39,6 @@ module Orderable
     def find_order_name_by_attribute(attribute)
       @klass.order_definition.conditions.detect{ |condition|
         condition.attribute == attribute
-      }.try(:name)
+      }.try(:name) || attribute.to_sym
     end
 end

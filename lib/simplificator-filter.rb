@@ -1,3 +1,5 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'simplificator_filter'))
+
 require 'active_support/all'
 require 'meta_where'
 
@@ -15,6 +17,10 @@ modules.each do |strategy|
 
   # Add extensions to ActiveRecord::Relation
   ActiveRecord::Relation.instance_eval do
+    include strategy.constantize
+  end
+
+  ActiveRecord::Base.instance_eval do
     include strategy.constantize
   end
 end
