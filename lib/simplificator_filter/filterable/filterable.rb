@@ -1,18 +1,9 @@
 module Filterable
 
-  def self.included base
-    base.extend ClassMethods
-  end
+  extend ActiveSupport::Concern
 
   module ClassMethods
     include ScopeLogic::ClassMethods
-
-    def filter(options = {})
-      raise Exception, "filter does not exists anymore use result_array.context[:filters]"
-      #filter_definition.values.first.scope.context[:filter]
-      #context[:filters]
-      #FilterParameters.new(self, options)
-    end
 
     def filter_definition &block
       scope_definition :filter, &block
@@ -30,6 +21,27 @@ module Filterable
     def filter_by parameters
       scoped_by :filter_definition, parameters
     end
-
   end
+
+  def filter(attribute)
+    #TODO
+    raise 'Todo'
+  end
+
+  def filters
+    where_values.inject({}) do |list, where_value|
+      if where_value.instance_of?(Hash)
+        meta_where, value, attribute = meta_column_and_attribute_by_value_set(where_value)
+        list[find_filter_name_by_attribute(attribute)] = {meta_where.method => value}
+      end
+      list
+    end
+  end
+
+  private
+    def find_filter_name_by_attribute(attribute)
+      @klass.filter_definition.conditions.detect{ |condition|
+        condition.attribute == attribute
+      }.try(:name)
+    end
 end

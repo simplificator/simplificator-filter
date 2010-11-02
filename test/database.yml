@@ -1,0 +1,24 @@
+sqlite:
+  adapter: sqlite3
+  database: ":memory:"
+
+mysql:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: si_test
+  pool: 5
+  username: root
+  password: r00t
+  socket: /tmp/mysql.sock
+
+postgres:
+  adapter: postgresql
+  host: localhost
+  port: 5432
+  username: root
+  password: r00t
+  database: si_test
+  schema_search_path: public
+  encoding: utf8
+  template: template0

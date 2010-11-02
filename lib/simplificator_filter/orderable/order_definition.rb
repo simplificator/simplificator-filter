@@ -7,7 +7,7 @@ module Orderable
       if options[:class]
         options[:class].constantize.new(table, condition_options)
       else
-        OrderCondition.new(table, condition_options)
+        OrderCondition.new(base_model, condition_options)
       end
     end
 

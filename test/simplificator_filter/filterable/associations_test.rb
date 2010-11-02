@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TestAssociations < Test::Unit::TestCase
 
-  context "order with associations" do
+  context "an order with associations" do
 
     setup do
       City.class_eval do

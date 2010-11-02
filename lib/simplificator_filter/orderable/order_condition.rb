@@ -1,43 +1,24 @@
 module Orderable
 
-  class OrderCondition
+  class OrderCondition < ScopeLogic::ScopeCondition
 
-    attr_reader :scope_name, :scope, :column
-
-    def initialize base, options
-      @column             = "#{ActiveRecord::Base.connection.quote_column_name(options[:table])}.#{ActiveRecord::Base.connection.quote_column_name(options[:column])}"
-      @name               = options[:name]
-      @scope_name         = "#{options[:name]}_order"
-      @scope              = scope_rails_2(base)
-      @path               = options[:attribute].split('.')[0...-1] # association path without attribute name
-      @include_option     = options[:include]
+    def initialize base_model, options
+      @scope_name = "#{options[:name]}_order"
+      super
     end
 
     protected
 
-      def scope_rails_2 base
-        base.named_scope @scope_name, lambda {|value|
-          value = order_direction(value)
-          scope = {:order => order_by(value)}
-          scope[:include] = @include_option if @include_option
-          scope[:context] = {:order => { @name.to_sym => value} }
-          scope
-        }
-      end
-
-      def scope_rails_3 base
-        # TODO: add include_option
-        base.scope @scope_name, lambda {|value|
-          order order_by(value)
+      def scope base_model
+        base_model.scope @scope_name, lambda {|value|
+          s = base_model.order(order_by(value))
+          s = s.joins(@nested) if @nested
+          s
         }
       end
 
       def order_by value
-        if value == :desc
-          "#{@column} DESC"
-        else
-          "#{@column} ASC"
-        end
+        nested_column(order_direction(value), nil)
       end
 
       def order_direction(value)

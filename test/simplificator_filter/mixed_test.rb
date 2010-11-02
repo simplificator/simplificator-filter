@@ -13,8 +13,8 @@ class Bar < ActiveRecord::Base
     product_name
   end
 
-  named_scope :carpet, lambda {|value| {:context => {:name => value}}} # :context => {:name => 'carpet'} #
-  named_scope :cheap, lambda {|value| {:context => {:price => value}}}  # :context => {:price => 'cheap'}  #
+  scope :cheap, where("price < 15")
+  scope :carpet, :conditions => ["product_name LIKE ?", "%carpet%"]
 end
 
 class MixedTest < Test::Unit::TestCase
@@ -30,20 +30,23 @@ class MixedTest < Test::Unit::TestCase
       result = Bar.filter_by(:fuzzy_name => 'pet').order_by(:product_name => 'desc')
       assert_equal 2, result.size
       assert_equal 'red carpet', result.first.product_name
-      assert_equal({:filters => {:fuzzy_name => 'pet'}, :order => {:product_name => :desc}}, result.context)
+      assert_equal({:fuzzy_name => {"matches" => '%pet%'}}, result.filters)
+      assert_equal({:product_name => :desc}, result.sorts)
     end
 
     should 'be able to chain order_by and filter_by' do
-      result = Bar.order_by(:product_name => 'desc').filter_by(:fuzzy_name => 'pet')
+      result = Bar.order_by(:product_name => 'asc').filter_by(:fuzzy_name => 'pet')
       assert_equal 2, result.size
-      assert_equal 'red carpet', result.first.product_name
-      assert_equal({:filters => {:fuzzy_name => 'pet'}, :order => {:product_name => :desc}}, result.context)
+      assert_equal 'magic carpet', result.first.product_name
+      assert_equal({:fuzzy_name => {"matches" => '%pet%'}}, result.filters)
+      assert_equal({:product_name => :asc}, result.sorts)
     end
 
-    should "have same context indedepent of the position of filter_by" do
+    should "have same context independent of the position of filter_by" do
       leading = Bar.filter_by(:fuzzy_name => 'pet').carpet('carpet').cheap('cheap')
       rear = Bar.carpet('carpet').cheap('cheap').filter_by(:fuzzy_name => 'pet')
-      assert_equal leading.context, rear.context
+      assert_equal leading.filters, rear.filters
+      assert_equal leading.sorts, rear.sorts
     end
 
     teardown do

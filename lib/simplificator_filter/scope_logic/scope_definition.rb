@@ -2,10 +2,11 @@ module ScopeLogic
 
   class Definition < Hash
 
-    attr_reader :table
+    attr_reader :base_model, :conditions
 
-    def initialize table
-      @table = table
+    def initialize base_model
+      @base_model = base_model
+      @conditions = []
     end
 
     def [] name
@@ -14,6 +15,7 @@ module ScopeLogic
           condition = self[name] = create_condition(name, condition)
         end
       end
+      @conditions << condition
       condition
     end
 
@@ -25,7 +27,7 @@ module ScopeLogic
     end
 
     def create_condition name, options
-      raise Exception, "overwritte by subclass"
+      raise Exception, "overwrite in subclass"
     end
 
     def condition_options name, options
@@ -34,38 +36,37 @@ module ScopeLogic
       path_with_attribute = options[:attribute].split('.')
       path_without_attribute = path_with_attribute[0...-1]
 
-      column, base = find_column_and_table(path_with_attribute, table)
+      column, parent_model = find_column_and_parent_model(path_with_attribute, base_model)
 
       unless column
         raise ArgumentError, "Can not resolve path #{options[:attribute]} on #{base.class.name}"
       end
-
-      options[:table]           = base.table_name
+      options[:parent_model]    = parent_model
       options[:column]          = column.name
       options[:attribute_type]  = column.type
-      options[:include]         = build_include_option(path_without_attribute, {})
+      options[:nested]          = build_nested_hash(path_without_attribute, {})
 
       options
     end
 
     private
-    # Walk a attribute path and find the base model and the name of the attribute
-    # "customer.orders.items.price" => [Item, "price"]
-    def find_column_and_table(path, base)
+    # Walk a attribute path and find the attribute holding model and the name of the attribute
+    # "customer.orders.items.price" => ["price", Item] (Item has attribute price)
+    def find_column_and_parent_model(path, base_model)
       if path.length > 1
-        find_column_and_table(path[1..-1], base.reflect_on_association(path.first.to_sym).class_name.constantize)
+        find_column_and_parent_model(path[1..-1], base_model.reflect_on_association(path.first.to_sym).class_name.constantize)
       else
-        [base.columns_hash[path.first.to_s], base]
+        [base_model.columns_hash[path.first.to_s], base_model]
       end
     end
 
     # "customer.orders.items" =>  :customer => {:orders => :items}
-    def build_include_option(path, hash)
+    def build_nested_hash(path, hash)
       if path.length > 1
-        hash[path.first] = build_include_option(path[1..-1], {})
+        hash[path.first.to_sym] = build_nested_hash(path[1..-1], {})
         hash
       else
-        path.first
+        path.first.try(:to_sym)
       end
     end
 

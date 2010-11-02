@@ -1,18 +1,20 @@
-modules = ['Filterable', 'Orderable']
+require 'active_support/all'
+require 'meta_where'
+
+modules = %w{Filterable Orderable}
+
+# Load scope logic
+require 'scope_logic/scope_definition'
+require 'scope_logic/scope_logic'
+require 'scope_logic/scope_parameters'
+require 'scope_logic/scope_condition'
 
 # Load all modules
-Dir.glob(File.join(File.dirname(__FILE__), 'simplificator_filter', 'scope_logic', '*.rb')).each {|file| require file}
 modules.each do |strategy|
   Dir.glob(File.join(File.dirname(__FILE__), 'simplificator_filter', strategy.downcase, '*.rb')).each {|file| require file}
-end
 
-# Add extensions to scope
-modules.each do |strategy|
-  #ActiveRecord::NamedScope::Scope.instance_eval do
-  #  include strategy.constantize::Scope
-  #end
-
-  ActiveRecord::Base.instance_eval do
+  # Add extensions to ActiveRecord::Relation
+  ActiveRecord::Relation.instance_eval do
     include strategy.constantize
   end
 end

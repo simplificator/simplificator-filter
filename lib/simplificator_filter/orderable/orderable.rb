@@ -1,17 +1,9 @@
 module Orderable
 
-  def self.included base
-    base.extend ClassMethods
-  end
+  extend ActiveSupport::Concern
 
   module ClassMethods
-
-    def order(options = {})
-      raise Exception, "order does not exists anymore use result_array.context[:filters]"
-      #filter_definition.values.first.scope.context[:filter]
-      #context[:filters]
-      #FilterParameters.new(self, options)
-    end
+    include ScopeLogic::ClassMethods
 
     def order_definition &block
       scope_definition :order, &block
@@ -29,6 +21,24 @@ module Orderable
     def order_by parameters
       scoped_by :order_definition, parameters
     end
-
   end
+
+  def sorts
+    order_values.inject({}) do |list, order_value|
+      if order_value.instance_of?(Hash)
+        meta_where, value, attribute = meta_column_and_attribute_by_value_set(order_value)
+        list[find_order_name_by_attribute(attribute)] = {meta_where.method => value}
+      elsif order_value.instance_of?(MetaWhere::Column)
+        list[find_order_name_by_attribute(order_value.column)] = order_value.method.to_sym
+      end
+      list
+    end
+  end
+
+  private
+    def find_order_name_by_attribute(attribute)
+      @klass.order_definition.conditions.detect{ |condition|
+        condition.attribute == attribute
+      }.try(:name)
+    end
 end
