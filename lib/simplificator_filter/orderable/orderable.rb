@@ -26,8 +26,8 @@ module Orderable
   def sorts
     order_values.inject({}) do |list, order_value|
       if order_value.instance_of?(Hash)
-        meta_where, value, attribute = meta_column_and_attribute_by_value_set(order_value)
-        list[find_order_name_by_attribute(attribute)] = {meta_where.method => value}
+        meta_where, attribute = meta_column_and_attribute_by_column_hash(order_value)
+        list[find_order_name_by_attribute(attribute)] = meta_where.method.to_sym
       elsif order_value.instance_of?(MetaWhere::Column)
         list[find_order_name_by_attribute(order_value.column)] = order_value.method.to_sym
       end

@@ -69,13 +69,24 @@ module ScopeLogic
       end
 
       #TODO refactor
-      def meta_column_and_attribute_by_value_set(value_set, value = nil, attribute = [])
+      def meta_column_and_attribute_by_column_hash(column_hash, attribute = [])
+        if column_hash.instance_of?(Hash)
+          meta_column_and_attribute_by_column_hash(column_hash.values.first, attribute << column_hash.keys.first.to_s)
+        elsif column_hash.instance_of?(MetaWhere::Column)
+          return column_hash, (attribute << column_hash.column).join('.')
+        else
+          [nil, '', '']
+        end
+      end
+
+      #TODO refactor
+      def meta_column_and_attribute_by_value_set(value_set, attribute = [])
         if value_set.values.first.instance_of?(Hash)
-          meta_column_and_attribute_by_value_set(value_set.values.first, value, attribute << value_set.keys.first.to_s)
+          meta_column_and_attribute_by_value_set(value_set.values.first, attribute << value_set.keys.first.to_s)
         elsif value_set.keys.first.instance_of?(MetaWhere::Column)
           return value_set.keys.first, value_set.values.first, (attribute << value_set.keys.first.column).join('.')
         else
-          [nil, '']
+          [nil, '', '']
         end
       end
   end
