@@ -8,10 +8,10 @@ module ScopeLogic
       # @return ActiveRecord::Relation with applied strategy
       def scoped_by name, parameters
         if parameters
-          parameters.inject(self.scoped({})) do |scope, parameter|
+          parameters.inject(self.scoped()) do |scope, parameter|
             key, value = parameter
 
-            if (condition = send(name)[key.to_sym]) && (!value.blank? || condition.include_blank?)
+            if (condition = send(name).try(:[], key.to_sym)) && (!value.blank? || condition.include_blank?)
               scope = scope.send(condition.scope_name, value)
             end
 
@@ -37,10 +37,10 @@ module ScopeLogic
         setup_scope_class scope_name, definition_name
 
         if block_given?
-          definition = instance_variable_get("@#{definition_name}") || instance_variable_set("@#{definition_name}", definition_class.new(self))
+          definition = read_inheritable_attribute("@#{definition_name}") || write_inheritable_attribute("@#{definition_name}", definition_class.new(self))
           definition.instance_eval(&block)
         else
-          instance_variable_get("@#{definition_name}")
+          read_inheritable_attribute("@#{definition_name}")
         end
       end
 
