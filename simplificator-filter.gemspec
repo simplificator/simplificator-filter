@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.7'
 
   s.add_dependency 'meta_where', '~> 0.9.6'
+  s.add_dependency 'activerecord', "= 3.0.10"
   s.add_development_dependency 'shoulda'
   s.add_development_dependency 'sqlite3-ruby', ">= 1.2.5"
   s.add_development_dependency 'mysql'

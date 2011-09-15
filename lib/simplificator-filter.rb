@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'simplificator_filter'))
 
+require 'rubygems'
 require 'active_support/all'
 require 'meta_where'
 
