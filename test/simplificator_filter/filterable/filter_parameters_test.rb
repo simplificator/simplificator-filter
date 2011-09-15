@@ -41,8 +41,6 @@ class FilterParametersTest < Test::Unit::TestCase
           @filter_parameters.foo = 4
         end
       end
-
-
     end
 
     context "with parameters" do
@@ -50,16 +48,11 @@ class FilterParametersTest < Test::Unit::TestCase
       setup do
         @filter_parameters = Filterable::FilterParameters.new(FooFilterOrder, :product_name => 'carpet', :price => 555)
       end
-
       should "hold the value of the parameter" do
         assert_equal 'carpet', @filter_parameters.product_name
         assert_equal 555, @filter_parameters.price
         assert_nil @filter_parameters.purchased_at
       end
-
-
     end
-
   end
-
 end
