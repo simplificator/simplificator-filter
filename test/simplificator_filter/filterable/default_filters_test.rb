@@ -20,60 +20,59 @@ class TestDefaultFilter < Test::Unit::TestCase
 
     context "for all attributes" do
 
-      #should "return filter parameters object" do
-      #  assert_instance_of Filterable::FilterParameters, DefaultAll.filter
-      #end
+      # should "return filter parameters object" do
+      #   assert_instance_of Filterable::FilterParameters, DefaultAll.filter
+      # end
 
       should "have a filter definition" do
         assert_instance_of Filterable::FilterDefinition, DefaultAll.filter_definition
       end
-=begin
-      should "have accessors for product_name" do
-        assert_respond_to DefaultAll.filter, :product_name
-        assert_respond_to DefaultAll.filter, :product_name=
-      end
 
-      should "have accessors for price" do
-        assert_respond_to DefaultAll.filter, :price
-        assert_respond_to DefaultAll.filter, :price=
-      end
+      # should "have accessors for product_name" do
+      #   assert_respond_to DefaultAll.filter, :product_name
+      #   assert_respond_to DefaultAll.filter, :product_name=
+      # end
+      #
+      # should "have accessors for price" do
+      #   assert_respond_to DefaultAll.filter, :price
+      #   assert_respond_to DefaultAll.filter, :price=
+      # end
+      #
+      # should "have accessors for purchased_at" do
+      #   assert_respond_to DefaultAll.filter, :purchased_at
+      #   assert_respond_to DefaultAll.filter, :purchased_at=
+      # end
 
-      should "have accessors for purchased_at" do
-        assert_respond_to DefaultAll.filter, :purchased_at
-        assert_respond_to DefaultAll.filter, :purchased_at=
-      end
-=end
     end
 
     context "for attributes" do
 
-      #should "return filter parameters object" do
+      # should "return filter parameters object" do
       #  assert_instance_of Filterable::FilterParameters, DefaultSome.filter
-      #end
+      # end
 
       should "have a filter definition" do
         assert_instance_of Filterable::FilterDefinition, DefaultSome.filter_definition
       end
-=begin
-      should "have accessors for product_name" do
-        assert_respond_to DefaultSome.filter, :product_name
-        assert_respond_to DefaultSome.filter, :product_name=
-      end
 
-      should "have accessors for price" do
-        assert_respond_to DefaultSome.filter, :price
-        assert_respond_to DefaultSome.filter, :price=
-      end
-
-      should "have no accessors for purchased_at" do
-        assert_raise NoMethodError do
-          DefaultSome.filter.purchased_at
-        end
-        assert_raise NoMethodError do
-          DefaultSome.filter.purchased_at = '5'
-        end
-      end
-=end
+      # should "have accessors for product_name" do
+      #   assert_respond_to DefaultSome.filter, :product_name
+      #   assert_respond_to DefaultSome.filter, :product_name=
+      # end
+      #
+      # should "have accessors for price" do
+      #   assert_respond_to DefaultSome.filter, :price
+      #   assert_respond_to DefaultSome.filter, :price=
+      # end
+      #
+      # should "have no accessors for purchased_at" do
+      #   assert_raise NoMethodError do
+      #     DefaultSome.filter.purchased_at
+      #   end
+      #   assert_raise NoMethodError do
+      #     DefaultSome.filter.purchased_at = '5'
+      #   end
+      # end
     end
 
     context "patterns" do
@@ -97,14 +96,12 @@ class TestDefaultFilter < Test::Unit::TestCase
         carpets = DefaultAll.filter_by(:product_name => 'water')
         assert_equal 1, carpets.size
       end
+
       should "not find anything with filter_by chained" do
         carpets = DefaultAll.filter_by(:product_name => '*carpet*').filter_by(:product_name => 'whisky*')
         assert_equal 0, carpets.size
       end
 
-
     end
-
   end
-
 end

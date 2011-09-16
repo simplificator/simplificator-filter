@@ -30,7 +30,7 @@ class MixedTest < Test::Unit::TestCase
       result = Bar.filter_by(:fuzzy_name => 'pet').order_by(:product_name => 'desc')
       assert_equal 2, result.size
       assert_equal 'red carpet', result.first.product_name
-      assert_equal({:fuzzy_name => {"matches" => '%pet%'}}, result.filters)
+      assert_equal({:fuzzy_name => {:matches => '%pet%'}}, result.filters)
       assert_equal({:product_name => :desc}, result.sorts)
     end
 
@@ -38,7 +38,7 @@ class MixedTest < Test::Unit::TestCase
       result = Bar.order_by(:product_name => 'asc').filter_by(:fuzzy_name => 'pet')
       assert_equal 2, result.size
       assert_equal 'magic carpet', result.first.product_name
-      assert_equal({:fuzzy_name => {"matches" => '%pet%'}}, result.filters)
+      assert_equal({:fuzzy_name => {:matches => '%pet%'}}, result.filters)
       assert_equal({:product_name => :asc}, result.sorts)
     end
 
