@@ -7,11 +7,11 @@ module ScopeLogic
     protected
       # @return ActiveRecord::Relation with applied strategy
       def scoped_by name, parameters
+
         if parameters
           parameters.inject(self.scoped()) do |scope, parameter|
             key, value = parameter
-
-            if (condition = send(name).try(:[], key.to_sym)) && (!value.blank? || condition.include_blank?)
+            if (condition = send("#{name.to_s}").try(:[], key.to_sym)) && (!value.blank? || condition.include_blank?)
               scope = scope.send(condition.scope_name, value)
             end
 
@@ -62,9 +62,9 @@ module ScopeLogic
         definition_name  = "#{scope_strategy}_definition"  # 'filter_definition'
         definition_class = "#{scope_strategy.to_s.capitalize}able::#{scope_strategy.to_s.capitalize}Definition".constantize # Filterable::FilterDefinition
 
-        instance_variable_get("@#{definition_name}") || instance_variable_set("@#{definition_name}", definition_class.new(self))
+        read_inheritable_attribute("@#{definition_name}") || write_inheritable_attribute("@#{definition_name}", definition_class.new(self))
         attributes.each do |attribute|
-          instance_variable_get("@#{definition_name}").send(attribute)
+          read_inheritable_attribute("@#{definition_name}").send(attribute)
         end
       end
 
@@ -72,7 +72,7 @@ module ScopeLogic
       def meta_column_and_attribute_by_column_hash(column_hash, attribute = [])
         if column_hash.instance_of?(Hash)
           meta_column_and_attribute_by_column_hash(column_hash.values.first, attribute << column_hash.keys.first.to_s)
-        elsif column_hash.instance_of?(MetaWhere::Column)
+        elsif column_hash.instance_of?(Squeel::Column)
           return column_hash, (attribute << column_hash.column).join('.')
         else
           [nil, '', '']
@@ -83,8 +83,8 @@ module ScopeLogic
       def meta_column_and_attribute_by_value_set(value_set, attribute = [])
         if value_set.values.first.instance_of?(Hash)
           meta_column_and_attribute_by_value_set(value_set.values.first, attribute << value_set.keys.first.to_s)
-        elsif value_set.keys.first.instance_of?(MetaWhere::Column)
-          return value_set.keys.first, value_set.values.first, (attribute << value_set.keys.first.column).join('.')
+        elsif value_set.keys.first.instance_of?(Squeel::Nodes::Predicate)
+          return value_set.keys.first, value_set.values.first, (attribute << value_set.keys.first.expr.to_s).join('.')
         else
           [nil, '', '']
         end

@@ -3,8 +3,8 @@ module ScopeLogic
   class ScopeParameters < Hash
 
     def initialize strategy_name, base, options = {}
-      raise ArgumentError, "has a #{strategy_name} definition been made for model #{base.name}" unless base.send("#{strategy_name}_definition")
-      base.send("#{strategy_name}_definition").keys.each {|key| self[key.to_sym] = nil}
+      raise ArgumentError, "has a #{strategy_name} definition been made for model #{base.name}" unless base.read_inheritable_attribute("@#{strategy_name}_definition")
+      base.read_inheritable_attribute("@#{strategy_name}_definition").keys.each {|key| self[key.to_sym] = nil}
       options.each do |key, value|
         raise NoMethodError, "undefined method '#{key}' for #{self.inspect}::#{self.class}" unless has_key?(key.to_sym)
         self[key.to_sym] = value

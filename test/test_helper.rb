@@ -3,11 +3,17 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'simplificator-filter'
 require 'test/unit'
 require 'shoulda'
-
+require 'pp'
 #ActiveRecord::Base.logger = Logger.new(STDOUT)
 #ActiveRecord::Base.logger.level = Logger::DEBUG
 
 require File.join(File.dirname(__FILE__), 'models')
+
+def debug(var)
+  puts "-" * 30
+  puts var
+  puts "-" * 30
+end
 
 def db_setup(name)
   database_yml = YAML.load_file(File.join(File.dirname(__FILE__), 'database.yml'))

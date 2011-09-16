@@ -23,19 +23,18 @@ module Filterable
     end
   end
 
-  def filter(attribute)
-    #TODO
-    raise 'Todo'
-  end
-
   def filters
     where_values.inject({}) do |list, where_value|
       if where_value.instance_of?(Hash)
         meta_where, value, attribute = meta_column_and_attribute_by_value_set(where_value)
-        list[find_filter_name_by_attribute(attribute)] = {meta_where.method => value}
+        list[find_filter_name_by_attribute(attribute)] = {meta_where.method_name => value}
       end
       list
     end
+  end
+
+  def filter attribute
+    pp where_values
   end
 
   private

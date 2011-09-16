@@ -58,9 +58,6 @@ class TestAssociations < Test::Unit::TestCase
         orders = Order.filter_by(:city => 'Zurich', :customer_name => 'Meier')
         assert_equal 2, orders.size
       end
-
     end
-
   end
-
 end

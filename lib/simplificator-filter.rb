@@ -1,7 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'simplificator_filter'))
 
+require 'rubygems'
 require 'active_support/all'
-require 'meta_where'
+require 'active_record'
+require 'squeel'
 
 modules = %w{Filterable Orderable}
 
@@ -13,6 +15,10 @@ require 'scope_logic/scope_condition'
 
 # Load all modules
 modules.each do |strategy|
+  Squeel.configure do |config|
+    config.load_core_extensions :hash, :symbol
+  end
+
   Dir.glob(File.join(File.dirname(__FILE__), 'simplificator_filter', strategy.downcase, '*.rb')).each {|file| require file}
 
   # Add extensions to ActiveRecord::Relation

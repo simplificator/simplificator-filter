@@ -36,26 +36,26 @@ class TestFilterable < Test::Unit::TestCase
 
     should "find all carpets" do
       carpets = Foo.filter_by(:fuzzy_name => 'carpet')
-      assert_equal({:fuzzy_name=>{"matches"=>"%carpet%"}}, carpets.filters)
+      assert_equal({:fuzzy_name => {:matches => '%carpet%'}}, carpets.filters)
     end
 
     should "find expensiver carpet" do
       carpets = Foo.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45')
-      assert_equal({:fuzzy_name=>{"matches"=>"%carpet%"}, :price_range=>{"in"=>"15".."45"}}, carpets.filters)
+      assert_equal({:fuzzy_name=>{:matches=>"%carpet%"}, :price_range=>{:in=>"15".."45"}}, carpets.filters)
     end
 
     should "find red carpet" do
       carpets = Foo.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45', :purchased_at => 1.day.ago.to_date)
       assert_equal({
-        :fuzzy_name=>{"matches"=>"%carpet%"},
-        :purchased_at=>{"eq"=>1.day.ago.to_date},
-        :price_range=>{"in"=>"15".."45"}
+        :fuzzy_name=>{:matches=>"%carpet%"},
+        :purchased_at=>{:eq=>1.day.ago.to_date},
+        :price_range=>{:in=>"15".."45"}
         }, carpets.filters)
     end
 
     should "find custom filter name with association" do
       carpets = Foo.filter_by(:cstmr => 'test')
-      assert_equal({:cstmr => {"matches" => '%test%'}}, carpets.filters)
+      assert_equal({:cstmr => {:matches => '%test%'}}, carpets.filters)
     end
 
     teardown do

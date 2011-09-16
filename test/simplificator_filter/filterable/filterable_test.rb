@@ -87,7 +87,6 @@ class TestFilterable < Test::Unit::TestCase
         orders = Foo.filter_by(:price_range => '')
         assert_equal({}, orders.filters)
       end
-
     end
 
     teardown do
