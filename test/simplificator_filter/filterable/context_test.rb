@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Foo < ActiveRecord::Base
+class Foo1 < ActiveRecord::Base
   set_table_name 'orders'
 
   include Filterable
@@ -21,31 +21,31 @@ class TestFilterable < Test::Unit::TestCase
 
     setup do
       names = ['magic carpet', 'red carpet', 'water bottle', 'whisky bottle']
-      0.upto(3) {|i| Foo.create(:price => (i+1)*10, :product_name => names[i], :purchased_at => i.days.ago) }
+      0.upto(3) {|i| Foo1.create(:price => (i+1)*10, :product_name => names[i], :purchased_at => i.days.ago) }
     end
 
     should "skip filter scope" do
-      carpets = Foo.filter_by(nil)
+      carpets = Foo1.filter_by(nil)
       assert_equal({}, carpets.filters)
     end
 
     should "skip filter scope 2" do
-      carpets = Foo.filter_by(nil).cheap
+      carpets = Foo1.filter_by(nil).cheap
       assert_equal({}, carpets.filters)
     end
 
     should "find all carpets" do
-      carpets = Foo.filter_by(:fuzzy_name => 'carpet')
+      carpets = Foo1.filter_by(:fuzzy_name => 'carpet')
       assert_equal({:fuzzy_name => {:matches => '%carpet%'}}, carpets.filters)
     end
 
     should "find expensiver carpet" do
-      carpets = Foo.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45')
+      carpets = Foo1.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45')
       assert_equal({:fuzzy_name=>{:matches=>"%carpet%"}, :price_range=>{:in=>"15".."45"}}, carpets.filters)
     end
 
     should "find red carpet" do
-      carpets = Foo.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45', :purchased_at => 1.day.ago.to_date)
+      carpets = Foo1.filter_by(:fuzzy_name => 'carpet', :price_range => '15 - 45', :purchased_at => 1.day.ago.to_date)
       assert_equal({
         :fuzzy_name=>{:matches=>"%carpet%"},
         :purchased_at=>{:eq=>1.day.ago.to_date},
@@ -54,7 +54,7 @@ class TestFilterable < Test::Unit::TestCase
     end
 
     should "find custom filter name with association" do
-      carpets = Foo.filter_by(:cstmr => 'test')
+      carpets = Foo1.filter_by(:cstmr => 'test')
       assert_equal({:cstmr => {:matches => '%test%'}}, carpets.filters)
     end
 
