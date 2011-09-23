@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FooFilterOrder < ActiveRecord::Base
+class OrdersWithDefaultFilters < ActiveRecord::Base
   set_table_name 'orders'
   include Filterable
   default_filters_for_all_attributes
@@ -13,7 +13,7 @@ class FilterParametersTest < Test::Unit::TestCase
     context "without parameters" do
 
       setup do
-        @filter_parameters = Filterable::FilterParameters.new(FooFilterOrder)
+        @filter_parameters = Filterable::FilterParameters.new(OrdersWithDefaultFilters)
       end
 
       should "respond to getter" do
@@ -46,7 +46,7 @@ class FilterParametersTest < Test::Unit::TestCase
     context "with parameters" do
 
       setup do
-        @filter_parameters = Filterable::FilterParameters.new(FooFilterOrder, :product_name => 'carpet', :price => 555)
+        @filter_parameters = Filterable::FilterParameters.new(OrdersWithDefaultFilters, :product_name => 'carpet', :price => 555)
       end
       should "hold the value of the parameter" do
         assert_equal 'carpet', @filter_parameters.product_name
