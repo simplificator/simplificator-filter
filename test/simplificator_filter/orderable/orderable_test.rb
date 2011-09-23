@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Foo < ActiveRecord::Base
+class OrdersWithOrdering < ActiveRecord::Base
   set_table_name 'orders'
 
   include Orderable
@@ -20,7 +20,7 @@ class TestFilterable < Test::Unit::TestCase
     context "order_definition" do
 
       should "have a order definition" do
-        assert_instance_of Orderable::OrderDefinition, Foo.order_definition
+        assert_instance_of Orderable::OrderDefinition, OrdersWithOrdering.order_definition
       end
 
     end
@@ -29,42 +29,42 @@ class TestFilterable < Test::Unit::TestCase
 
       setup do
         names = ['magic carpet', 'red carpet', 'water bottle', 'whisky bottle']
-        0.upto(3) {|i| Foo.create(:price => (i+1)*10, :product_name => names[i], :purchased_at => i.days.ago.to_date) }
+        0.upto(3) {|i| OrdersWithOrdering.create(:price => (i+1)*10, :product_name => names[i], :purchased_at => i.days.ago.to_date) }
       end
 
 
       should "skip order scope" do
-        carpets = Foo.order_by(nil)
+        carpets = OrdersWithOrdering.order_by(nil)
         assert_equal 4, carpets.size
         assert_equal 'magic carpet', carpets.first.product_name
       end
 
       should "skip order scope 2" do
-        carpets = Foo.order_by(nil).carpets
+        carpets = OrdersWithOrdering.order_by(nil).carpets
         assert_equal 2, carpets.size
         assert_equal 'magic carpet', carpets.first.product_name
       end
 
       should "order all carpets descending" do
-        carpets = Foo.order_by(:name => 'desc').carpets
+        carpets = OrdersWithOrdering.order_by(:name => 'desc').carpets
         assert_equal 2, carpets.size
         assert_equal 'red carpet', carpets.first.product_name
       end
 
       should "order all carpets ascending" do
-        carpets = Foo.order_by(:name => 'asc').carpets
+        carpets = OrdersWithOrdering.order_by(:name => 'asc').carpets
         assert_equal 2, carpets.size
         assert_equal 'magic carpet', carpets.first.product_name
       end
 
       should "order cheaper carpert" do
-        carpets = Foo.order_by(:name => 'carpet').cheap
+        carpets = OrdersWithOrdering.order_by(:name => 'carpet').cheap
         assert_equal 1, carpets.size
         assert_equal 'magic carpet', carpets.first.product_name
       end
 
       should "order cheaper carpert too" do
-        carpets = Foo.cheap.order_by(:name => 'carpet')
+        carpets = OrdersWithOrdering.cheap.order_by(:name => 'carpet')
         assert_equal 1, carpets.size
         assert_equal 'magic carpet', carpets.first.product_name
       end
