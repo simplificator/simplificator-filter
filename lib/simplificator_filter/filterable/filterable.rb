@@ -27,7 +27,9 @@ module Filterable
     where_values.inject({}) do |list, where_value|
       if where_value.instance_of?(Hash)
         meta_where, value, attribute = meta_column_and_attribute_by_value_set(where_value)
-        list[find_filter_name_by_attribute(attribute)] = {meta_where.method_name => value}
+        if meta_where
+          list[find_filter_name_by_attribute(attribute)] = {meta_where.method_name => value}
+        end
       end
       list
     end

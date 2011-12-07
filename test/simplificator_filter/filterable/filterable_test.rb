@@ -32,7 +32,6 @@ class TestFilterable < Test::Unit::TestCase
         0.upto(3) {|i| OrdersWithFilters2.create(:price => (i+1)*10, :product_name => names[i], :purchased_at => i.days.ago.to_date) }
       end
 
-
       should "skip filter scope" do
         carpets = OrdersWithFilters2.filter_by(nil)
         assert_equal 4, carpets.size
@@ -86,6 +85,12 @@ class TestFilterable < Test::Unit::TestCase
       should "not accept blank for price range" do
         orders = OrdersWithFilters2.filter_by(:price_range => '')
         assert_equal({}, orders.filters)
+      end
+
+      should "accepts additional conditions" do
+        orders = OrdersWithFilters2.where(:price => 10).filter_by(:fuzzy_name => '')
+        assert_not_equal({}, orders.filters)
+        assert_equal 1, orders.size
       end
     end
 
