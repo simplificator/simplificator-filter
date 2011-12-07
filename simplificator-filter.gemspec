@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activerecord', "~> 3.0"
   s.add_dependency 'activesupport', "~> 3.0"
   s.add_development_dependency 'shoulda'
-  s.add_development_dependency 'sqlite3-ruby', ">= 1.2.5"
+  s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'mysql'
   s.add_development_dependency 'pg'
 
