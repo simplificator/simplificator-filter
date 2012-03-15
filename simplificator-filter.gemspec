@@ -19,9 +19,10 @@ Gem::Specification.new do |s|
 
 
   s.required_rubygems_version = '>= 1.3.7'
-  s.add_dependency 'squeel'
-  s.add_dependency 'activerecord', "~> 3.0"
-  s.add_dependency 'activesupport', "~> 3.0"
+  s.add_dependency 'squeel', "~> 0.9.3"
+  s.add_dependency 'activerecord', "< 3.2"
+  s.add_dependency 'activesupport', "< 3.2"
+  s.add_development_dependency 'rake'
   s.add_development_dependency 'shoulda'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'mysql'

@@ -72,8 +72,8 @@ module ScopeLogic
       def meta_column_and_attribute_by_column_hash(column_hash, attribute = [])
         if column_hash.instance_of?(Hash)
           meta_column_and_attribute_by_column_hash(column_hash.values.first, attribute << column_hash.keys.first.to_s)
-        elsif column_hash.instance_of?(Squeel::Column)
-          return column_hash, (attribute << column_hash.column).join('.')
+        elsif column_hash.instance_of?(Squeel::Nodes::Order)
+          return column_hash, (attribute << column_hash.expr).join('.')
         else
           [nil, '', '']
         end
